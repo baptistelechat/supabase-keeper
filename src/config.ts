@@ -14,6 +14,12 @@ export const ConfigSchema = z.object({
           .datetime()
           .optional()
           .transform((val) => (val ? new Date(val) : undefined)),
+        status: z.enum(["active", "paused", "error"]).default("active"),
+        lastPing: z
+          .string()
+          .datetime()
+          .optional()
+          .transform((val) => (val ? new Date(val) : undefined)),
       }),
     )
     .default([]),

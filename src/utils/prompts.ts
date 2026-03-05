@@ -34,6 +34,7 @@ export async function promptForProjectDetails(
 
   let supabaseProjectUrl: string | symbol = "";
   let supabasePublishableKey: string | symbol = "";
+  let isValidated = false;
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
@@ -92,10 +93,11 @@ export async function promptForProjectDetails(
 
     if (validation.isValid) {
       s.stop(validation.message || "Connection verified!");
+      isValidated = true;
       break;
     } else {
       s.stop(chalk.red(`Validation failed: ${validation.message}`));
-      
+
       const action = await select({
         message: "Connection validation failed. What do you want to do?",
         options: [
@@ -113,15 +115,18 @@ export async function promptForProjectDetails(
       if (action === "force") {
         break;
       }
-      
+
       // If retry, loop continues
     }
   }
 
+  const now = new Date();
   return {
     name: projectName as string,
     supabaseProjectUrl: (supabaseProjectUrl as string) || "",
     supabasePublishableKey: (supabasePublishableKey as string) || "",
-    createdAt: new Date(),
+    createdAt: now,
+    status: isValidated ? "active" : "error",
+    lastPing: isValidated ? now : undefined,
   };
 }

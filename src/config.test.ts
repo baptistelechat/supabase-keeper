@@ -24,6 +24,8 @@ describe("Config", () => {
           supabaseProjectUrl: "https://example.com",
           supabasePublishableKey: "sbp_key",
           createdAt: now,
+          status: "active",
+          lastPing: undefined,
         },
       ],
     };

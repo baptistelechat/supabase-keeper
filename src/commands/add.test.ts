@@ -81,6 +81,8 @@ describe("Add Command", () => {
       "https://test.supabase.co",
     );
     expect(config.projects[0]?.createdAt).toBeDefined();
+    expect(config.projects[0]?.status).toBe("active");
+    expect(config.projects[0]?.lastPing).toBeDefined();
     expect(clack.outro).toHaveBeenCalled();
   });
 
@@ -114,9 +116,9 @@ describe("Add Command", () => {
     vi.mocked(clack.text).mockResolvedValueOnce("https://forced.supabase.co");
     vi.mocked(clack.password).mockResolvedValueOnce("sbp_forcedkey");
 
-    // Mock Supabase failure (500)
+    // Mock Supabase failure (Network Error)
     mockSupabase.maybeSingle.mockResolvedValueOnce({
-      error: { code: "500", message: "Server Error" },
+      error: { message: "fetch failed" },
     });
 
     // Select "force"
@@ -127,6 +129,8 @@ describe("Add Command", () => {
     const config: Config = await fs.readJson(CONFIG_PATH);
     expect(config.projects).toHaveLength(1);
     expect(config.projects[0]?.name).toBe("forced-project");
+    expect(config.projects[0]?.status).toBe("error");
+    expect(config.projects[0]?.lastPing).toBeUndefined();
   });
 
   it("should handle retry", async () => {
@@ -160,6 +164,8 @@ describe("Add Command", () => {
     expect(config.projects).toHaveLength(1);
     expect(config.projects[0]?.name).toBe("retry-project");
     expect(config.projects[0]?.supabaseProjectUrl).toBe("https://good.supabase.co");
+    expect(config.projects[0]?.status).toBe("active");
+    expect(config.projects[0]?.lastPing).toBeDefined();
   });
 
   it("should error if config does not exist", async () => {

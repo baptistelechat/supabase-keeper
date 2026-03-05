@@ -38,6 +38,16 @@ supabase-keeper add
 
 This command will prompt you for the project name, Supabase URL, and Publishable Key. It validates the connection before adding the project.
 
+### List Projects
+
+List all configured projects:
+
+```bash
+supabase-keeper list
+```
+
+This will display a table with project details (Name, URL, Status, Last Ping) and the API Key (masked).
+
 ## Configuration
 
 The configuration is stored in `supabase-keeper.config.json`.
@@ -51,7 +61,8 @@ Example:
       "name": "my-project",
       "supabaseProjectUrl": "https://xyz.supabase.co",
       "supabasePublishableKey": "sb_publishable_...",
-      "createdAt": "2026-01-01T12:00:00.000Z"
+      "createdAt": "2026-01-01T12:00:00.000Z",
+      "status": "active"
     }
   ]
 }
