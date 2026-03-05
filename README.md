@@ -40,8 +40,8 @@ Example:
     {
       "name": "my-project",
       "path": "/absolute/path/to/project",
-      "supabaseUrl": "https://xyz.supabase.co",
-      "supabaseKey": "ey..."
+      "supabaseProjectUrl": "https://xyz.supabase.co",
+      "supabasePublishableKey": "sb_publishable_..."
     }
   ]
 }

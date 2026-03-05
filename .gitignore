@@ -163,4 +163,5 @@ dist
 
 .grepai/
 supabase-keeper.config.json
+/supabase-keeper
 /tmp

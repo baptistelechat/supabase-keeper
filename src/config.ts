@@ -7,9 +7,8 @@ export const ConfigSchema = z.object({
     .array(
       z.object({
         name: z.string(),
-        path: z.string(),
-        supabaseUrl: z.string().optional(),
-        supabaseKey: z.string().optional(),
+        supabaseProjectUrl: z.string().optional(),
+        supabasePublishableKey: z.string().optional(),
       }),
     )
     .default([]),

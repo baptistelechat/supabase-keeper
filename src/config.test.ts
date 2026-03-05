@@ -20,7 +20,6 @@ describe('Config', () => {
       projects: [
         {
           name: 'test-project',
-          path: '/test/path',
         },
       ],
     };

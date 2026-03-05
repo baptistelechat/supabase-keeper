@@ -3,7 +3,9 @@ import {
   confirm,
   intro,
   isCancel,
+  log,
   outro,
+  password,
   spinner,
   text,
 } from "@clack/prompts";
@@ -11,6 +13,7 @@ import chalk from "chalk";
 import { Command } from "commander";
 import fs from "fs-extra";
 import path from "path";
+import z from "zod";
 import { CONFIG_FILENAME, DEFAULT_CONFIG, saveConfig } from "../config";
 
 export const initCommand = new Command("init")
@@ -41,7 +44,7 @@ export const initCommand = new Command("init")
 
     if (await fs.pathExists(configPath)) {
       const overwrite = await confirm({
-        message: `Configuration file already exists at ${configPath}. Overwrite?`,
+        message: `Configuration file already exists at ${chalk.yellow(configPath)}. Overwrite?`,
         initialValue: false,
       });
 
@@ -70,9 +73,17 @@ export const initCommand = new Command("init")
     const config = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
 
     if (shouldAddProject) {
+      log.info(
+        chalk.gray(
+          `💡 Need your project details (URL & Publishable Key)?\n   Go to: ${chalk.cyan.underline(
+            "https://supabase.com/dashboard/project/_/settings/api?showConnect=true&connectTab=api-keys",
+          )}`,
+        ),
+      );
+
       const projectName = await text({
         message: "Project name:",
-        placeholder: "my-supabase-keeper",
+        placeholder: "my-first-project",
         validate(value) {
           if (!value || value.length === 0) return "Name is required!";
         },
@@ -82,29 +93,49 @@ export const initCommand = new Command("init")
         process.exit(0);
       }
 
-      const supabaseUrl = await text({
-        message: "Supabase URL (optional):",
+      const supabaseProjectUrl = await text({
+        message: `Supabase URL ${chalk.gray("(optional)")}:`,
         placeholder: "https://xyz.supabase.co",
+        validate(value) {
+          if (!value) return; // Optional
+          const result = z.string().url().safeParse(value);
+          if (!result.success) return "Invalid URL format";
+        },
       });
-      if (isCancel(supabaseUrl)) {
+      if (isCancel(supabaseProjectUrl)) {
         cancel("Operation cancelled.");
         process.exit(0);
       }
 
-      const supabaseKey = await text({
-        message: "Supabase Key (optional):",
-        placeholder: "ey...",
+      const supabasePublishableKey = await password({
+        message: `Supabase Publishable Key ${chalk.gray("(optional)")}:`,
+        mask: "•",
+        validate(value) {
+          if (!value) return; // Optional
+
+          // Check for new format (sbp_... or sb_publishable_...)
+          if (value.startsWith("sbp_") || value.startsWith("sb_publishable_")) {
+            return; // Valid new format
+          }
+
+          // Check for legacy JWT format (3 parts separated by dots)
+          const parts = value.split(".");
+          if (parts.length === 3) {
+            return; // Valid legacy format
+          }
+
+          return "Invalid key format. Expected 'sbp_'/'sb_publishable_' prefix or legacy JWT format.";
+        },
       });
-      if (isCancel(supabaseKey)) {
+      if (isCancel(supabasePublishableKey)) {
         cancel("Operation cancelled.");
         process.exit(0);
       }
 
       config.projects.push({
         name: projectName as string,
-        path: targetDir,
-        supabaseUrl: (supabaseUrl as string) || "",
-        supabaseKey: (supabaseKey as string) || "",
+        supabaseProjectUrl: (supabaseProjectUrl as string) || "",
+        supabasePublishableKey: (supabasePublishableKey as string) || "",
       });
     }
 

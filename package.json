@@ -1,6 +1,6 @@
 {
   "name": "supabase-keeper",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Supabase Keeper CLI",
   "main": "dist/index.js",
   "type": "module",
@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsup src/index.ts --format esm --clean --dts",
     "start": "node dist/index.js",
-    "dev": "ts-node src/index.ts",
+    "dev": "node --no-warnings --loader ts-node/esm --experimental-specifier-resolution=node src/index.ts",
     "test": "vitest run"
   },
   "keywords": [],
