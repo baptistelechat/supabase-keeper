@@ -7,8 +7,13 @@ export const ConfigSchema = z.object({
     .array(
       z.object({
         name: z.string(),
-        supabaseProjectUrl: z.string().optional(),
-        supabasePublishableKey: z.string().optional(),
+        supabaseProjectUrl: z.string(),
+        supabasePublishableKey: z.string(),
+        createdAt: z
+          .string()
+          .datetime()
+          .optional()
+          .transform((val) => (val ? new Date(val) : undefined)),
       }),
     )
     .default([]),

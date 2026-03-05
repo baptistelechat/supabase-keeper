@@ -5,7 +5,6 @@ import {
   isCancel,
   log,
   outro,
-  password,
   spinner,
   text,
 } from "@clack/prompts";
@@ -13,8 +12,8 @@ import chalk from "chalk";
 import { Command } from "commander";
 import fs from "fs-extra";
 import path from "path";
-import z from "zod";
 import { CONFIG_FILENAME, DEFAULT_CONFIG, saveConfig } from "../config";
+import { promptForProjectDetails } from "../utils/prompts";
 
 export const initCommand = new Command("init")
   .description("Initialize Supabase Keeper configuration")
@@ -81,62 +80,13 @@ export const initCommand = new Command("init")
         ),
       );
 
-      const projectName = await text({
-        message: "Project name:",
-        placeholder: "my-first-project",
-        validate(value) {
-          if (!value || value.length === 0) return "Name is required!";
-        },
-      });
-      if (isCancel(projectName)) {
-        cancel("Operation cancelled.");
-        process.exit(0);
+      const projectDetails = await promptForProjectDetails(config.projects);
+
+      if (!projectDetails) {
+        process.exit(0); // Cancelled in prompt
       }
 
-      const supabaseProjectUrl = await text({
-        message: `Supabase URL ${chalk.gray("(optional)")}:`,
-        placeholder: "https://xyz.supabase.co",
-        validate(value) {
-          if (!value) return; // Optional
-          const result = z.string().url().safeParse(value);
-          if (!result.success) return "Invalid URL format";
-        },
-      });
-      if (isCancel(supabaseProjectUrl)) {
-        cancel("Operation cancelled.");
-        process.exit(0);
-      }
-
-      const supabasePublishableKey = await password({
-        message: `Supabase Publishable Key ${chalk.gray("(optional)")}:`,
-        mask: "•",
-        validate(value) {
-          if (!value) return; // Optional
-
-          // Check for new format (sbp_... or sb_publishable_...)
-          if (value.startsWith("sbp_") || value.startsWith("sb_publishable_")) {
-            return; // Valid new format
-          }
-
-          // Check for legacy JWT format (3 parts separated by dots)
-          const parts = value.split(".");
-          if (parts.length === 3) {
-            return; // Valid legacy format
-          }
-
-          return "Invalid key format. Expected 'sbp_'/'sb_publishable_' prefix or legacy JWT format.";
-        },
-      });
-      if (isCancel(supabasePublishableKey)) {
-        cancel("Operation cancelled.");
-        process.exit(0);
-      }
-
-      config.projects.push({
-        name: projectName as string,
-        supabaseProjectUrl: (supabaseProjectUrl as string) || "",
-        supabasePublishableKey: (supabasePublishableKey as string) || "",
-      });
+      config.projects.push(projectDetails);
     }
 
     const s = spinner();
