@@ -14,21 +14,24 @@
 ## Critères d'acceptation
 
 - [ ] La commande `supabase-keeper pause <project-name>` (ou `stop`, `suspend`) passe le statut du projet à `paused`.
-- [ ] La commande `supabase-keeper active <project-name>` (ou `resume`, `start`, `unpause`) repasse le statut du projet à `active`.
+- [ ] La commande `supabase-keeper active <project-name>` (ou `resume`, `start`, `unpause`) repasse le statut du projet à `active`.
 - [ ] La commande `list` affiche correctement le nouveau statut.
 - [ ] Si le projet est déjà dans l'état demandé, un message informatif est affiché.
 - [ ] Les commandes gèrent les noms de projets inexistants avec une erreur claire.
 
 ## Notes Techniques
 
-- Ajouter un champ `isActive` (boolean) ou `status` (string enum: 'active', 'paused', 'error') dans l'interface `Project` du fichier `config.ts`.
+- Le champ `status` (enum: 'active', 'paused', 'error') existe déjà dans l'interface `Project` du fichier `src/config.ts`.
+- Implémenter `src/commands/pause.ts` pour mettre à jour le statut à `paused`.
+- Implémenter `src/commands/resume.ts` pour mettre à jour le statut à `active`.
+- Enregistrer les nouvelles commandes dans `src/index.ts`.
 - Mettre à jour la logique de sauvegarde pour persister ce changement d'état.
 - **Important :** S'assurer que la future logique de Ping (Epic 3) vérifiera ce statut avant d'effectuer des requêtes.
 
 ## Dépendances
 
-- Story 1.1 (Configuration)
-- Story 1.3 (Listing des projets - mise à jour de l'affichage)
+- Story 1.1 (Configuration) - Terminée
+- Story 1.3 (Listing des projets) - Terminée (vérifier l'affichage du statut)
 
 ## Definition of Done
 
@@ -36,4 +39,3 @@
 - [ ] Tests unitaires pour le changement d'état.
 - [ ] Vérification manuelle via la commande `list`.
 - [ ] Documentation mise à jour.
-

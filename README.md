@@ -85,6 +85,40 @@ Options:
 
 - `--force` (`-f`): Skip confirmation prompt.
 
+### Pause a Project
+
+Pause monitoring for a Supabase project.
+
+```bash
+supabase-keeper pause <project-name> [directory]
+```
+
+Aliases: `stop`, `suspend`
+
+Examples:
+
+```bash
+supabase-keeper pause my-project
+supabase-keeper stop my-project
+```
+
+### Resume a Project
+
+Resume monitoring for a Supabase project.
+
+```bash
+supabase-keeper resume <project-name> [directory]
+```
+
+Aliases: `active`, `start`, `unpause`
+
+Examples:
+
+```bash
+supabase-keeper resume my-project
+supabase-keeper start my-project
+```
+
 ## Configuration
 
 The configuration is stored in `supabase-keeper.config.json`.
