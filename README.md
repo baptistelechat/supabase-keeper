@@ -1,4 +1,4 @@
-# Supabase Keeper
+# ⚡⌚ Supabase Keeper
 
 A CLI tool to manage Supabase projects locally.
 
@@ -14,15 +14,16 @@ npm link # To run globally as supabase-keeper
 
 ### Initialization
 
-Initialize a new configuration file in the current directory:
+Initialize a new configuration file.
+
+```bash
+supabase-keeper init [directory]
+```
+
+Examples:
 
 ```bash
 supabase-keeper init
-```
-
-Or specify a directory:
-
-```bash
 supabase-keeper init ./my-config-dir
 ```
 
@@ -30,23 +31,59 @@ This command will guide you through the setup process, allowing you to add your 
 
 ### Add a Project
 
-Add a new Supabase project to your configuration:
+Add a new Supabase project to your configuration.
+
+```bash
+supabase-keeper add [directory]
+```
+
+Examples:
 
 ```bash
 supabase-keeper add
+supabase-keeper add ./my-config-dir
 ```
 
 This command will prompt you for the project name, Supabase URL, and Publishable Key. It validates the connection before adding the project.
 
 ### List Projects
 
-List all configured projects:
+List all configured projects.
+
+```bash
+supabase-keeper list [directory]
+```
+
+Examples:
 
 ```bash
 supabase-keeper list
+supabase-keeper list ./my-config-dir
 ```
 
-This will display a table with project details (Name, URL, Status, Last Ping) and the API Key (masked).
+This will display a table with project details (Name, URL, Status, Created At, Last Ping) and the API Key (masked).
+
+### Remove a Project
+
+Remove a project from your configuration.
+
+```bash
+supabase-keeper remove <project-name> [directory]
+```
+
+Aliases: `rm`, `delete`
+
+Examples:
+
+```bash
+supabase-keeper remove my-project
+supabase-keeper rm my-project
+supabase-keeper delete my-project ./my-config-dir
+```
+
+Options:
+
+- `--force` (`-f`): Skip confirmation prompt.
 
 ## Configuration
 
@@ -67,3 +104,4 @@ Example:
   ]
 }
 ```
+

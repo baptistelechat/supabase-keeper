@@ -53,6 +53,20 @@ Basé sur le PRD v1.0 et l'Architecture v1.0.
 - Supprime le projet du fichier de configuration.
 - Demande une confirmation à l'utilisateur avant suppression.
 
+### Story 1.5 : Mettre en Pause et Reprendre un Projet
+
+**En tant qu'** utilisateur
+**Je veux** pouvoir mettre en pause et reprendre la surveillance d'un projet via `supabase-keeper pause <project>` et `supabase-keeper resume <project>`
+**Afin de** stopper temporairement les pings sans avoir à supprimer et reconfigurer le projet (ex: pendant une maintenance).
+
+**Critères d'acceptation :**
+
+- La commande `supabase-keeper pause <project-name>` passe le statut du projet à `paused` (ou `inactive`).
+- La commande `supabase-keeper resume <project-name>` (ou `start`, `unpause`) repasse le statut du projet à `active`.
+- La commande `list` affiche correctement le nouveau statut.
+- Si le projet est déjà dans l'état demandé, un message informatif est affiché.
+- Les commandes gèrent les noms de projets inexistants avec une erreur claire.
+
 ## Epic 2 : Exécution en Arrière-plan (FR-02)
 
 **Objectif :** Assurer que l'outil s'exécute automatiquement en arrière-plan pour effectuer des pings sans intervention de l'utilisateur.
