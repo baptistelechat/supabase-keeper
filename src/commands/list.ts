@@ -6,7 +6,8 @@ import path from "path";
 import { loadConfig } from "../config";
 
 export const listCommand = new Command("list")
-  .description("List all monitored Supabase projects")
+  .description("List all monitored Supabase projects (alias: ls)")
+  .aliases(["ls"])
   .argument("[directory]", "Directory where the config file is located")
   .action(async (directory) => {
     intro(chalk.bgBlue(" supabase-keeper list "));

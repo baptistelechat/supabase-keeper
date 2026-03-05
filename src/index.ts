@@ -6,7 +6,7 @@ import { initCommand } from "./commands/init";
 import { listCommand } from "./commands/list";
 import { pauseCommand } from "./commands/pause";
 import { removeCommand } from "./commands/remove";
-import { resumeCommand } from "./commands/resume";
+import { activeCommand } from "./commands/active";
 
 const require = createRequire(import.meta.url);
 const pkg = require("../package.json");
@@ -23,6 +23,6 @@ program.addCommand(addCommand);
 program.addCommand(listCommand);
 program.addCommand(removeCommand);
 program.addCommand(pauseCommand);
-program.addCommand(resumeCommand);
+program.addCommand(activeCommand);
 
 program.parse(process.argv);

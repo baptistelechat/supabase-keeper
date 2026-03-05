@@ -54,6 +54,8 @@ List all configured projects.
 supabase-keeper list [directory]
 ```
 
+Alias: `ls`
+
 Examples:
 
 ```bash
@@ -102,21 +104,21 @@ supabase-keeper pause my-project
 supabase-keeper stop my-project
 ```
 
-### Resume a Project
+### Activate a Project
 
-Resume monitoring for a Supabase project.
+Active monitoring for a Supabase project.
 
 ```bash
-supabase-keeper resume <project-name> [directory]
+supabase-keeper active <project-name> [directory]
 ```
 
-Aliases: `active`, `start`, `unpause`
+Aliases: `resume`, `start`, `unpause`
 
 Examples:
 
 ```bash
+supabase-keeper active my-project
 supabase-keeper resume my-project
-supabase-keeper start my-project
 ```
 
 ## Configuration
@@ -138,4 +140,3 @@ Example:
   ]
 }
 ```
-

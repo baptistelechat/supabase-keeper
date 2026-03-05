@@ -1,7 +1,7 @@
 import { intro, log, outro } from "@clack/prompts";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { loadConfig, saveConfig } from "../config";
-import { resumeCommand } from "./resume";
+import { activeCommand } from "./active";
 
 vi.mock("../config", () => ({
   loadConfig: vi.fn(),
@@ -18,7 +18,7 @@ vi.mock("@clack/prompts", () => ({
   outro: vi.fn(),
 }));
 
-describe("resume command", () => {
+describe("active command", () => {
   const processExitSpy = vi.spyOn(process, "exit").mockImplementation((() => { throw new Error("process.exit called"); }) as any);
 
   beforeEach(() => {
@@ -28,7 +28,7 @@ describe("resume command", () => {
   it("should exit if config not found", async () => {
     (loadConfig as any).mockResolvedValue(null);
 
-    await expect(resumeCommand.parseAsync(["node", "test", "my-project"])).rejects.toThrow("process.exit called");
+    await expect(activeCommand.parseAsync(["node", "test", "my-project"])).rejects.toThrow("process.exit called");
 
     expect(loadConfig).toHaveBeenCalled();
     expect(log.error).toHaveBeenCalledWith(expect.stringContaining("Configuration file not found"));
@@ -38,7 +38,7 @@ describe("resume command", () => {
   it("should exit if project not found", async () => {
     (loadConfig as any).mockResolvedValue({ projects: [] });
 
-    await expect(resumeCommand.parseAsync(["node", "test", "non-existent-project"])).rejects.toThrow("process.exit called");
+    await expect(activeCommand.parseAsync(["node", "test", "non-existent-project"])).rejects.toThrow("process.exit called");
 
     expect(log.error).toHaveBeenCalledWith(expect.stringContaining("Project 'non-existent-project' not found"));
     expect(processExitSpy).toHaveBeenCalledWith(1);
@@ -54,7 +54,7 @@ describe("resume command", () => {
       ],
     });
 
-    await resumeCommand.parseAsync(["node", "test", "my-project"]);
+    await activeCommand.parseAsync(["node", "test", "my-project"]);
 
     expect(log.info).toHaveBeenCalledWith(expect.stringContaining("is already active"));
     expect(saveConfig).not.toHaveBeenCalled();
@@ -69,7 +69,7 @@ describe("resume command", () => {
       projects: [project],
     });
 
-    await resumeCommand.parseAsync(["node", "test", "my-project"]);
+    await activeCommand.parseAsync(["node", "test", "my-project"]);
 
     expect(project.status).toBe("active");
     expect(saveConfig).toHaveBeenCalledWith(

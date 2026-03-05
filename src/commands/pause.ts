@@ -5,7 +5,7 @@ import path from "path";
 import { loadConfig, saveConfig } from "../config";
 
 export const pauseCommand = new Command("pause")
-  .description("Pause monitoring for a Supabase project")
+  .description("Pause monitoring for a Supabase project (aliases: stop, suspend)")
   .aliases(["stop", "suspend"])
   .argument("<project-name>", "Name of the project to pause")
   .argument("[directory]", "Directory where the config file is located")

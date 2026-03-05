@@ -4,13 +4,15 @@ import { Command } from "commander";
 import path from "path";
 import { loadConfig, saveConfig } from "../config";
 
-export const resumeCommand = new Command("resume")
-  .description("Resume monitoring for a Supabase project")
-  .aliases(["active", "start", "unpause"])
+export const activeCommand = new Command("active")
+  .description(
+    "Active monitoring for a Supabase project (aliases: resume, start, unpause)",
+  )
+  .aliases(["resume", "start", "unpause"])
   .argument("<project-name>", "Name of the project to resume")
   .argument("[directory]", "Directory where the config file is located")
   .action(async (projectName, directory) => {
-    intro(chalk.bgBlue(" supabase-keeper resume "));
+    intro(chalk.bgBlue(" supabase-keeper active "));
 
     const targetDir = directory ? path.resolve(directory) : process.cwd();
 

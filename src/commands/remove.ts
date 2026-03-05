@@ -5,11 +5,10 @@ import path from "path";
 import { loadConfig, saveConfig } from "../config";
 
 export const removeCommand = new Command("remove")
-  .description("Remove a Supabase project from the configuration")
+  .description("Remove a Supabase project from the configuration (aliases: rm, delete)")
+  .aliases(["rm","delete"])
   .argument("<project-name>", "Name of the project to remove")
   .argument("[directory]", "Directory where the config file is located")
-  .alias("rm")
-  .alias("delete")
   .option("-f, --force", "Force deletion without confirmation")
   .action(async (projectName, directory, options) => {
     intro(chalk.bgRed(" supabase-keeper remove "));
