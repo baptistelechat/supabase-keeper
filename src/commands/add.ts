@@ -1,0 +1,39 @@
+import { intro, log, outro } from "@clack/prompts";
+import chalk from "chalk";
+import { Command } from "commander";
+import path from "path";
+import { DEFAULT_CONFIG_DIR, loadConfig, saveConfig } from "../config";
+import { promptForProjectDetails } from "../utils/prompts";
+
+export const addCommand = new Command("add")
+  .description("Add a new Supabase project")
+  .argument("[directory]", "Directory where the config file is located")
+  .action(async (directory) => {
+    intro(chalk.bgBlue(" supabase-keeper add "));
+
+    const targetDir = directory ? path.resolve(directory) : DEFAULT_CONFIG_DIR;
+    const config = await loadConfig(targetDir);
+
+    if (!config) {
+      log.error(
+        `Configuration not found in ${chalk.yellow(targetDir)}.\nPlease run ${chalk.cyan(
+          "supabase-keeper init",
+        )} first or go to the project directory.`,
+      );
+      process.exit(1);
+      return;
+    }
+
+    const projectDetails = await promptForProjectDetails(config.projects);
+
+    if (!projectDetails) {
+      process.exit(0); // Cancelled
+      return;
+    }
+
+    config.projects.push(projectDetails);
+
+    await saveConfig(config, targetDir);
+
+    outro(`Project ${chalk.green(projectDetails.name)} added successfully!`);
+  });

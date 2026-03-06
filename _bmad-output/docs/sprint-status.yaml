@@ -1,4 +1,4 @@
-generated: 2026-03-02
+generated: 2026-03-05
 project: Supabase Keeper
 project_key: SUPABASE-KEEPER
 tracking_system: file-system
@@ -34,12 +34,13 @@ story_location: "_bmad-output/docs/stories"
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 development_status:
-  epic-1: backlog
-  1-1-initialisation-configuration-cli: backlog
-  1-2-ajouter-un-projet: backlog
-  1-3-lister-les-projets: backlog
-  1-4-supprimer-un-projet: backlog
-  epic-1-retrospective: optional
+  epic-1: done
+  1-1-initialisation-configuration-cli: done
+  1-2-ajouter-un-projet: done
+  1-3-lister-les-projets: done
+  1-4-supprimer-un-projet: done
+  1-5-pause-reprendre-projet: done
+  epic-1-retrospective: done
 
   epic-2: backlog
   2-1-generation-de-service-systemd: backlog
