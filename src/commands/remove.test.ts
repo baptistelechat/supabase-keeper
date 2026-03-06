@@ -58,7 +58,7 @@ describe("Remove Command", () => {
 
     vi.mocked(clack.confirm).mockResolvedValue(true);
 
-    await removeCommand.parseAsync(["node", "remove", "project-to-remove"]);
+    await removeCommand.parseAsync(["node", "remove", "project-to-remove", TEST_DIR]);
 
     const config: Config = await fs.readJson(CONFIG_PATH);
     expect(config.projects).toHaveLength(0);
@@ -86,6 +86,7 @@ describe("Remove Command", () => {
       "node",
       "remove",
       "project-to-remove",
+      TEST_DIR,
       "--force",
     ]);
 
@@ -114,7 +115,7 @@ describe("Remove Command", () => {
 
     vi.mocked(clack.confirm).mockResolvedValue(false);
 
-    await removeCommand.parseAsync(["node", "remove", "project-to-keep"]);
+    await removeCommand.parseAsync(["node", "remove", "project-to-keep", TEST_DIR]);
 
     const config: Config = await fs.readJson(CONFIG_PATH);
     expect(config.projects).toHaveLength(1);
@@ -139,7 +140,7 @@ describe("Remove Command", () => {
 
     vi.mocked(clack.confirm).mockResolvedValue(cancelSymbol as any);
 
-    await removeCommand.parseAsync(["node", "remove", "project-to-keep"]);
+    await removeCommand.parseAsync(["node", "remove", "project-to-keep", TEST_DIR]);
 
     const config: Config = await fs.readJson(CONFIG_PATH);
     expect(config.projects).toHaveLength(1);
@@ -152,7 +153,7 @@ describe("Remove Command", () => {
     };
     await fs.writeJson(CONFIG_PATH, initialConfig);
 
-    await removeCommand.parseAsync(["node", "remove", "non-existent-project"]);
+    await removeCommand.parseAsync(["node", "remove", "non-existent-project", TEST_DIR]);
 
     expect(clack.log.error).toHaveBeenCalledWith(
       expect.stringContaining("not found"),
@@ -163,7 +164,7 @@ describe("Remove Command", () => {
   it("should show error if config file is missing", async () => {
     // No config file created
 
-    await removeCommand.parseAsync(["node", "remove", "some-project"]);
+    await removeCommand.parseAsync(["node", "remove", "some-project", TEST_DIR]);
 
     expect(clack.log.error).toHaveBeenCalledWith(
       expect.stringContaining("Configuration not found"),

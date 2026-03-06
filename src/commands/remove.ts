@@ -2,7 +2,7 @@ import { cancel, confirm, intro, isCancel, log, outro } from "@clack/prompts";
 import chalk from "chalk";
 import { Command } from "commander";
 import path from "path";
-import { loadConfig, saveConfig } from "../config";
+import { DEFAULT_CONFIG_DIR, loadConfig, saveConfig } from "../config";
 
 export const removeCommand = new Command("remove")
   .description("Remove a Supabase project from the configuration (aliases: rm, delete)")
@@ -13,7 +13,7 @@ export const removeCommand = new Command("remove")
   .action(async (projectName, directory, options) => {
     intro(chalk.bgRed(" supabase-keeper remove "));
 
-    const targetDir = directory ? path.resolve(directory) : process.cwd();
+    const targetDir = directory ? path.resolve(directory) : DEFAULT_CONFIG_DIR;
     const config = await loadConfig(targetDir);
 
     if (!config) {

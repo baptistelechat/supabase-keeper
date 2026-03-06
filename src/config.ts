@@ -1,6 +1,9 @@
 import fs from "fs-extra";
+import os from "os";
 import path from "path";
 import { z } from "zod";
+
+export const DEFAULT_CONFIG_DIR = path.join(os.homedir(), ".supabase-keeper");
 
 export const ConfigSchema = z.object({
   projects: z
@@ -35,7 +38,7 @@ export const CONFIG_FILENAME = "supabase-keeper.config.json";
 
 export async function saveConfig(
   config: Config,
-  directory: string = process.cwd(),
+  directory: string = DEFAULT_CONFIG_DIR,
 ): Promise<string> {
   const filePath = path.join(directory, CONFIG_FILENAME);
   await fs.writeJson(filePath, config, { spaces: 2 });
@@ -43,7 +46,7 @@ export async function saveConfig(
 }
 
 export async function loadConfig(
-  directory: string = process.cwd(),
+  directory: string = DEFAULT_CONFIG_DIR,
 ): Promise<Config | null> {
   const filePath = path.join(directory, CONFIG_FILENAME);
   if (await fs.pathExists(filePath)) {

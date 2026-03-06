@@ -6,6 +6,7 @@ import { activeCommand } from "./active";
 vi.mock("../config", () => ({
   loadConfig: vi.fn(),
   saveConfig: vi.fn(),
+  DEFAULT_CONFIG_DIR: "mocked-dir",
 }));
 
 vi.mock("@clack/prompts", () => ({
@@ -40,7 +41,7 @@ describe("active command", () => {
 
     await expect(activeCommand.parseAsync(["node", "test", "non-existent-project"])).rejects.toThrow("process.exit called");
 
-    expect(log.error).toHaveBeenCalledWith(expect.stringContaining("Project 'non-existent-project' not found"));
+    expect(log.error).toHaveBeenCalledWith(expect.stringContaining("Project non-existent-project not found"));
     expect(processExitSpy).toHaveBeenCalledWith(1);
   });
 

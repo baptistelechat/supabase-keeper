@@ -72,7 +72,7 @@ describe("Add Command", () => {
       error: { code: "PGRST204", message: "relation not found" },
     });
 
-    await addCommand.parseAsync(["node", "test"]);
+    await addCommand.parseAsync(["node", "test", TEST_DIR]);
 
     const config: Config = await fs.readJson(CONFIG_PATH);
     expect(config.projects).toHaveLength(1);
@@ -100,7 +100,7 @@ describe("Add Command", () => {
     // Select "cancel"
     vi.mocked(clack.select).mockResolvedValueOnce("cancel" as any);
 
-    await addCommand.parseAsync(["node", "test"]);
+    await addCommand.parseAsync(["node", "test", TEST_DIR]);
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     expect(clack.cancel).toHaveBeenCalledWith("Operation cancelled.");
@@ -124,7 +124,7 @@ describe("Add Command", () => {
     // Select "force"
     vi.mocked(clack.select).mockResolvedValueOnce("force" as any);
 
-    await addCommand.parseAsync(["node", "test"]);
+    await addCommand.parseAsync(["node", "test", TEST_DIR]);
 
     const config: Config = await fs.readJson(CONFIG_PATH);
     expect(config.projects).toHaveLength(1);
@@ -158,7 +158,7 @@ describe("Add Command", () => {
       error: { code: "PGRST204", message: "relation not found" },
     });
 
-    await addCommand.parseAsync(["node", "test"]);
+    await addCommand.parseAsync(["node", "test", TEST_DIR]);
 
     const config: Config = await fs.readJson(CONFIG_PATH);
     expect(config.projects).toHaveLength(1);
@@ -171,7 +171,7 @@ describe("Add Command", () => {
   it("should error if config does not exist", async () => {
     await fs.remove(CONFIG_PATH);
 
-    await addCommand.parseAsync(["node", "test"]);
+    await addCommand.parseAsync(["node", "test", TEST_DIR]);
 
     expect(clack.log.error).toHaveBeenCalled();
     expect(exitSpy).toHaveBeenCalledWith(1);

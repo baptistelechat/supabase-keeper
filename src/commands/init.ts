@@ -6,13 +6,12 @@ import {
   log,
   outro,
   spinner,
-  text,
 } from "@clack/prompts";
 import chalk from "chalk";
 import { Command } from "commander";
 import fs from "fs-extra";
 import path from "path";
-import { CONFIG_FILENAME, DEFAULT_CONFIG, saveConfig } from "../config";
+import { CONFIG_FILENAME, DEFAULT_CONFIG, DEFAULT_CONFIG_DIR, saveConfig } from "../config";
 import { promptForProjectDetails } from "../utils/prompts";
 
 export const initCommand = new Command("init")
@@ -21,23 +20,7 @@ export const initCommand = new Command("init")
   .action(async (directory) => {
     intro(chalk.bgBlue(" supabase-keeper init "));
 
-    let targetDir;
-
-    if (directory) {
-      targetDir = path.resolve(directory);
-    } else {
-      const selectedDir = await text({
-        message: "Where do you want to initialize the configuration?",
-        placeholder: "./supabase-keeper",
-        initialValue: "./supabase-keeper",
-      });
-
-      if (isCancel(selectedDir)) {
-        cancel("Operation cancelled.");
-        process.exit(0);
-      }
-      targetDir = path.resolve(selectedDir as string);
-    }
+    const targetDir = directory ? path.resolve(directory) : DEFAULT_CONFIG_DIR;
 
     const configPath = path.join(targetDir, CONFIG_FILENAME);
 

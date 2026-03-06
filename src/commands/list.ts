@@ -3,7 +3,7 @@ import chalk from "chalk";
 import Table from "cli-table3";
 import { Command } from "commander";
 import path from "path";
-import { loadConfig } from "../config";
+import { DEFAULT_CONFIG_DIR, loadConfig } from "../config";
 
 export const listCommand = new Command("list")
   .description("List all monitored Supabase projects (alias: ls)")
@@ -12,7 +12,7 @@ export const listCommand = new Command("list")
   .action(async (directory) => {
     intro(chalk.bgBlue(" supabase-keeper list "));
 
-    const targetDir = directory ? path.resolve(directory) : process.cwd();
+    const targetDir = directory ? path.resolve(directory) : DEFAULT_CONFIG_DIR;
     const config = await loadConfig(targetDir);
 
     if (!config || config.projects.length === 0) {

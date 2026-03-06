@@ -2,7 +2,7 @@ import { intro, log, outro } from "@clack/prompts";
 import chalk from "chalk";
 import { Command } from "commander";
 import path from "path";
-import { loadConfig, saveConfig } from "../config";
+import { DEFAULT_CONFIG_DIR, loadConfig, saveConfig } from "../config";
 import { promptForProjectDetails } from "../utils/prompts";
 
 export const addCommand = new Command("add")
@@ -11,7 +11,7 @@ export const addCommand = new Command("add")
   .action(async (directory) => {
     intro(chalk.bgBlue(" supabase-keeper add "));
 
-    const targetDir = directory ? path.resolve(directory) : process.cwd();
+    const targetDir = directory ? path.resolve(directory) : DEFAULT_CONFIG_DIR;
     const config = await loadConfig(targetDir);
 
     if (!config) {

@@ -5,6 +5,7 @@ import { listCommand } from "./list";
 
 vi.mock("../config", () => ({
   loadConfig: vi.fn(),
+  DEFAULT_CONFIG_DIR: "mocked-dir",
 }));
 
 vi.mock("@clack/prompts", () => ({
