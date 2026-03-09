@@ -7,6 +7,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { DEFAULT_CONFIG_DIR, ensureConfig } from "../config";
 import { isPM2Installed, savePM2List, startWithPM2 } from "../utils/pm2";
+import { logCommand } from "../utils/utils";
 
 export const pingCommand = new Command("ping")
   .description("Ping all active projects")
@@ -32,7 +33,7 @@ export const pingCommand = new Command("ping")
       if (activeProjects.length === 0) {
         log.warn(
           chalk.yellow(
-            `No active projects to ping. Run ${chalk.cyan(
+            `No active projects to ping. Run ${logCommand(
               "supabase-keeper active",
             )} to activate a project.`,
           ),
@@ -79,7 +80,7 @@ export const pingCommand = new Command("ping")
       // Planification Cron : Tous les jours à 09:00
       // 0 9 * * *
       cron.schedule("0 9 * * *", async () => {
-      // cron.schedule("*/30 * * * * *", async () => {
+        // cron.schedule("*/30 * * * * *", async () => {
         try {
           log.info(chalk.blue("Running scheduled daily ping..."));
           await runPing();

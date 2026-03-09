@@ -26,7 +26,7 @@ export const pauseCommand = new Command("pause")
     const { project, index: projectIndex } = ensureProject(config, projectName);
 
     if (project.status === "paused") {
-      log.info(`Project ${chalk.cyan(projectName)} is already paused.`);
+      log.info(`Project ${chalk.yellow(projectName)} is already paused.`);
       return;
     }
 

@@ -8,6 +8,7 @@ import {
   ensureProject,
   saveConfig,
 } from "../config";
+import { logCommand } from "../utils/utils";
 
 export const activeCommand = new Command("active")
   .description(
@@ -27,7 +28,7 @@ export const activeCommand = new Command("active")
 
     if (project.status === "active") {
       log.info(
-        `Project ${chalk.cyan(projectName)} is already active.`,
+        `Project ${logCommand(projectName)} is already active.`,
       );
       return;
     }

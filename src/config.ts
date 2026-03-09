@@ -4,6 +4,7 @@ import fs from "fs-extra";
 import os from "os";
 import path from "path";
 import { z } from "zod";
+import { logCommand } from "./utils/utils";
 
 export const DEFAULT_CONFIG_DIR = path.join(os.homedir(), ".supabase-keeper");
 
@@ -14,7 +15,7 @@ export async function ensureConfig(
 
   if (!config) {
     log.error(
-      `Configuration file not found in ${chalk.red(targetDir)}. Run ${chalk.cyan(
+      `Configuration file not found in ${chalk.red(targetDir)}. Run ${logCommand(
         "supabase-keeper init",
       )} first.`,
     );
@@ -33,7 +34,7 @@ export function ensureProject(
 
   if (index === -1 || !project) {
     log.error(
-      `Project ${chalk.red(projectName)} not found. Use ${chalk.cyan(
+      `Project ${chalk.red(projectName)} not found. Use ${logCommand(
         "supabase-keeper list",
       )} to see available projects.`,
     );

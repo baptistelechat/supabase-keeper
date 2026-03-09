@@ -11,7 +11,12 @@ import chalk from "chalk";
 import { Command } from "commander";
 import fs from "fs-extra";
 import path from "path";
-import { CONFIG_FILENAME, DEFAULT_CONFIG, DEFAULT_CONFIG_DIR, saveConfig } from "../config";
+import {
+  CONFIG_FILENAME,
+  DEFAULT_CONFIG,
+  DEFAULT_CONFIG_DIR,
+  saveConfig,
+} from "../config";
 import { promptForProjectDetails } from "../utils/prompts";
 
 export const initCommand = new Command("init")

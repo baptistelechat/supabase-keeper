@@ -4,6 +4,7 @@ import Table from "cli-table3";
 import { Command } from "commander";
 import path from "path";
 import { DEFAULT_CONFIG_DIR, ensureConfig } from "../config";
+import { logCommand } from "../utils/utils";
 
 export const listCommand = new Command("list")
   .description("List all monitored Supabase projects (alias: ls)")
@@ -17,7 +18,7 @@ export const listCommand = new Command("list")
 
     if (config.projects.length === 0) {
       log.info(
-        `No projects found. Use ${chalk.cyan("supabase-keeper add")} to add one.`,
+        `No projects found. Use ${logCommand("supabase-keeper add")} to add one.`,
       );
       return;
     }
