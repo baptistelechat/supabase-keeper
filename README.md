@@ -121,9 +121,49 @@ supabase-keeper active my-project
 supabase-keeper resume my-project
 ```
 
-### Ping Projects
+### Background Execution (Daemon Mode)
 
-Manually ping all active projects.
+Run Supabase Keeper in the background to automatically ping your projects daily.
+
+**Prerequisites:**
+
+- [PM2](https://pm2.keymetrics.io/) must be installed globally:
+  ```bash
+  npm install pm2 -g
+  ```
+
+**Start the Daemon:**
+
+```bash
+supabase-keeper ping --daemon
+```
+
+This command will:
+1. Verify PM2 installation.
+2. Start a background process named `supabase-keeper`.
+3. Configure the internal scheduler (runs daily at 09:00 AM).
+4. Persist the process list (`pm2 save`).
+
+**Manage the Daemon:**
+
+- **View Logs:** Check execution logs and ping results.
+  ```bash
+  pm2 logs supabase-keeper
+  ```
+
+- **Stop Daemon:** Stop the background process.
+  ```bash
+  pm2 stop supabase-keeper
+  ```
+
+- **Restart Daemon:** Apply code updates or restart the process.
+  ```bash
+  pm2 restart supabase-keeper
+  ```
+
+### Manual Ping
+
+Manually trigger a ping for all active projects (useful for testing).
 
 ```bash
 supabase-keeper ping [directory]
@@ -132,19 +172,6 @@ supabase-keeper ping [directory]
 Options:
 
 - `--all`: Ping all projects regardless of status (not implemented yet).
-- `--daemon`: Run in background with PM2 (requires PM2 installed globally).
-
-Example:
-
-```bash
-supabase-keeper ping --daemon
-```
-
-This will:
-
-1. Check if PM2 is installed.
-2. Start `supabase-keeper ping` with PM2 using a cron schedule.
-3. Save the PM2 process list.
 
 ## Configuration
 
