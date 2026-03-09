@@ -26,7 +26,7 @@ Basé sur le PRD v1.0 et l'Architecture v1.0.
 
 **Critères d'acceptation :**
 
-- Demande l'URL du projet et la clé API (service_role ou anon).
+- Demande l'URL du projet et la clé API (service\_role ou anon).
 - Valide la connexion au projet avant de sauvegarder.
 - Sauvegarde les détails du projet dans le fichier de configuration sécurisé.
 - Chiffre les données sensibles si possible (ou s'appuie sur les permissions de fichiers).
@@ -71,19 +71,7 @@ Basé sur le PRD v1.0 et l'Architecture v1.0.
 
 **Objectif :** Assurer que l'outil s'exécute automatiquement en arrière-plan pour effectuer des pings sans intervention de l'utilisateur.
 
-### Story 2.1 : Génération de Service Systemd
-
-**En tant qu'** utilisateur Linux
-**Je veux** générer un fichier de service systemd via `supabase-keeper daemon --systemd`
-**Afin que** l'outil se lance automatiquement au démarrage.
-
-**Critères d'acceptation :**
-
-- Génère un fichier `.service` valide dans `~/.config/systemd/user/`.
-- Active et démarre le service automatiquement.
-- Le service exécute `supabase-keeper ping --all` périodiquement ou en tant que processus démon.
-
-### Story 2.2 : Support PM2
+### Story 2.1 : Support PM2
 
 **En tant qu'** utilisateur ayant PM2 installé
 **Je veux** utiliser PM2 pour gérer le processus d'arrière-plan
@@ -95,15 +83,15 @@ Basé sur le PRD v1.0 et l'Architecture v1.0.
 - Ajoute `supabase-keeper` à la liste des processus PM2.
 - Configure PM2 pour redémarrer le processus en cas d'échec/redémarrage (`pm2 save`).
 
-### Story 2.3 : Fallback Cron
+### Story 2.2 : Fallback Cron
 
 **En tant qu'** utilisateur sur un environnement simple
 **Je veux** générer une entrée Cron
-**Afin de** pouvoir exécuter l'outil sans systemd ou PM2.
+**Afin de** pouvoir exécuter l'outil périodiquement.
 
 **Critères d'acceptation :**
 
-- Affiche une ligne crontab valide (ex: `0 * * * * supabase-keeper ping --all`).
+- Affiche une ligne crontab valide (ex: `supabase-keeper ping --all`).
 - Fournit des instructions sur la façon de l'ajouter à la crontab.
 
 ## Epic 3 : Logique de Ping & Fiabilité (FR-03)
@@ -184,3 +172,4 @@ Basé sur le PRD v1.0 et l'Architecture v1.0.
 - Logue chaque tentative de ping (horodatage, projet, résultat).
 - Implémente la rotation des logs (ex: taille max de fichier 5Mo).
 - Logue les erreurs avec suffisamment de détails pour le débogage.
+

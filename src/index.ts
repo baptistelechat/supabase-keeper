@@ -7,6 +7,7 @@ import { listCommand } from "./commands/list";
 import { pauseCommand } from "./commands/pause";
 import { removeCommand } from "./commands/remove";
 import { activeCommand } from "./commands/active";
+import { pingCommand } from "./commands/ping";
 
 const require = createRequire(import.meta.url);
 const pkg = require("../package.json");
@@ -24,5 +25,6 @@ program.addCommand(listCommand);
 program.addCommand(removeCommand);
 program.addCommand(pauseCommand);
 program.addCommand(activeCommand);
+program.addCommand(pingCommand);
 
 program.parse(process.argv);

@@ -121,6 +121,31 @@ supabase-keeper active my-project
 supabase-keeper resume my-project
 ```
 
+### Ping Projects
+
+Manually ping all active projects.
+
+```bash
+supabase-keeper ping [directory]
+```
+
+Options:
+
+- `--all`: Ping all projects regardless of status (not implemented yet).
+- `--daemon`: Run in background with PM2 (requires PM2 installed globally).
+
+Example:
+
+```bash
+supabase-keeper ping --daemon
+```
+
+This will:
+
+1. Check if PM2 is installed.
+2. Start `supabase-keeper ping` with PM2 using a cron schedule.
+3. Save the PM2 process list.
+
 ## Configuration
 
 The configuration is stored in `supabase-keeper.config.json`.
@@ -140,3 +165,4 @@ Example:
   ]
 }
 ```
+

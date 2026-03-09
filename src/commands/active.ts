@@ -2,7 +2,12 @@ import { intro, log, outro } from "@clack/prompts";
 import chalk from "chalk";
 import { Command } from "commander";
 import path from "path";
-import { DEFAULT_CONFIG_DIR, loadConfig, saveConfig } from "../config";
+import {
+  DEFAULT_CONFIG_DIR,
+  ensureConfig,
+  ensureProject,
+  saveConfig,
+} from "../config";
 
 export const activeCommand = new Command("active")
   .description(
@@ -16,34 +21,14 @@ export const activeCommand = new Command("active")
 
     const targetDir = directory ? path.resolve(directory) : DEFAULT_CONFIG_DIR;
 
-    const config = await loadConfig(targetDir);
+    const config = await ensureConfig(targetDir);
 
-    if (!config) {
-      log.error(
-        `Configuration file not found in ${targetDir}. Run 'supabase-keeper init' first.`,
-      );
-      process.exit(1);
-    }
-
-    const projectIndex = config.projects.findIndex(
-      (p) => p.name === projectName,
-    );
-
-    if (projectIndex === -1) {
-      log.error(`Project ${chalk.red(projectName)} not found.`);
-      process.exit(1);
-    }
-
-    const project = config.projects[projectIndex];
-
-    if (!project) {
-      log.error(`Project ${chalk.red(projectName)} could not be retrieved.`);
-      process.exit(1);
-    }
+    const { project, index: projectIndex } = ensureProject(config, projectName);
 
     if (project.status === "active") {
-      log.info(`Project ${chalk.yellow(projectName)} is already active.`);
-      outro(chalk.yellow("No changes made."));
+      log.info(
+        `Project ${chalk.cyan(projectName)} is already active.`,
+      );
       return;
     }
 
@@ -53,5 +38,4 @@ export const activeCommand = new Command("active")
     await saveConfig(config, targetDir);
 
     log.success(`Project ${chalk.green(projectName)} has been resumed.`);
-    outro(chalk.green("Done!"));
   });
