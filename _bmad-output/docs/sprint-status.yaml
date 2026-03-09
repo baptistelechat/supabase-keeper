@@ -42,9 +42,9 @@ development_status:
   1-5-pause-reprendre-projet: done
   epic-1-retrospective: done
 
-  epic-2: in-progress
+  epic-2: done
   2-1-support-pm2: done
-  2-2-fallback-cron: backlog
+  2-2-daemon-pm2: done
   epic-2-retrospective: optional
 
   epic-3: backlog

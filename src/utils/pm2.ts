@@ -36,22 +36,11 @@ export function startWithPM2(
     }
 
     const argsStr = args.length > 0 ? ` -- ${args.join(" ")}` : "";
-    // If using cron, add --cron "*/5 * * * *"
-    // For now, let's assume we want to run `ping` every 5 minutes
-    const cronStr = args.includes("ping") ? ' --cron "*/5 * * * *"' : "";
-
+    
     // We also need to handle interpreter for .ts files if running locally
     // But let's assume built .js for now
 
-    // If we use --cron, PM2 will restart it every 5 minutes.
-    // But if we pass `ping`, the command `node script.js ping` will execute once and exit.
-    // PM2 restarts it immediately if not using cron.
-    // With cron, it waits.
-    // So if we use `ping`, we MUST use cron or daemon mode.
-
-    // Let's force cron for ping for now.
-
-    execSync(`pm2 start "${scriptPath}" --name ${name}${cronStr}${argsStr}`, {
+    execSync(`pm2 start "${scriptPath}" --name ${name}${argsStr}`, {
       stdio: "inherit",
     });
     log.success(`Process ${chalk.green(name)} started with PM2.`);
