@@ -1,10 +1,12 @@
 import { intro, log, outro } from "@clack/prompts";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { loadConfig, saveConfig } from "../config";
+import { ensureConfig, ensureProject, saveConfig } from "../config";
 import { pauseCommand } from "./pause";
 
 vi.mock("../config", () => ({
   loadConfig: vi.fn(),
+  ensureConfig: vi.fn(),
+  ensureProject: vi.fn(),
   saveConfig: vi.fn(),
   DEFAULT_CONFIG_DIR: "mocked-dir",
 }));
@@ -27,32 +29,46 @@ describe("pause command", () => {
   });
 
   it("should exit if config not found", async () => {
-    (loadConfig as any).mockResolvedValue(null);
+    (ensureConfig as any).mockImplementation(() => {
+        log.error("Configuration file not found");
+        process.exit(1);
+    });
 
-    await expect(pauseCommand.parseAsync(["node", "test", "my-project"])).rejects.toThrow("process.exit called");
+    await expect(
+      pauseCommand.parseAsync(["node", "test", "my-project"]),
+    ).rejects.toThrow("process.exit called");
 
-    expect(loadConfig).toHaveBeenCalled();
-    expect(log.error).toHaveBeenCalledWith(expect.stringContaining("Configuration file not found"));
+    expect(ensureConfig).toHaveBeenCalled();
     expect(processExitSpy).toHaveBeenCalledWith(1);
   });
 
   it("should exit if project not found", async () => {
-    (loadConfig as any).mockResolvedValue({ projects: [] });
+    (ensureConfig as any).mockResolvedValue({ projects: [] });
+    (ensureProject as any).mockImplementation(() => {
+      log.error("Project not found");
+      process.exit(1);
+    });
 
-    await expect(pauseCommand.parseAsync(["node", "test", "non-existent-project"])).rejects.toThrow("process.exit called");
+    await expect(
+      pauseCommand.parseAsync(["node", "test", "non-existent-project"]),
+    ).rejects.toThrow("process.exit called");
 
-    expect(log.error).toHaveBeenCalledWith(expect.stringContaining("Project non-existent-project not found"));
+    expect(ensureProject).toHaveBeenCalled();
     expect(processExitSpy).toHaveBeenCalledWith(1);
   });
 
   it("should inform if project is already paused", async () => {
-    (loadConfig as any).mockResolvedValue({
+    (ensureConfig as any).mockResolvedValue({
       projects: [
         {
           name: "my-project",
           status: "paused",
         },
       ],
+    });
+    (ensureProject as any).mockReturnValue({
+      project: { name: "my-project", status: "paused" },
+      index: 0,
     });
 
     await pauseCommand.parseAsync(["node", "test", "my-project"]);
@@ -66,8 +82,12 @@ describe("pause command", () => {
       name: "my-project",
       status: "active",
     };
-    (loadConfig as any).mockResolvedValue({
+    (ensureConfig as any).mockResolvedValue({
       projects: [project],
+    });
+    (ensureProject as any).mockReturnValue({
+      project,
+      index: 0,
     });
 
     await pauseCommand.parseAsync(["node", "test", "my-project"]);
@@ -79,6 +99,6 @@ describe("pause command", () => {
       }),
       expect.any(String)
     );
-    expect(log.success).toHaveBeenCalledWith(expect.stringContaining("has been paused"));
+    expect(outro).toHaveBeenCalledWith(expect.stringContaining("has been paused"));
   });
 });

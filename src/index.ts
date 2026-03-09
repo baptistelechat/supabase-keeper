@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 import { Command } from "commander";
 import { createRequire } from "module";
+import { activeCommand } from "./commands/active";
 import { addCommand } from "./commands/add";
 import { initCommand } from "./commands/init";
 import { listCommand } from "./commands/list";
 import { pauseCommand } from "./commands/pause";
+import { pingCommand } from "./commands/ping";
 import { removeCommand } from "./commands/remove";
-import { activeCommand } from "./commands/active";
 
 const require = createRequire(import.meta.url);
 const pkg = require("../package.json");
@@ -24,5 +25,6 @@ program.addCommand(listCommand);
 program.addCommand(removeCommand);
 program.addCommand(pauseCommand);
 program.addCommand(activeCommand);
+program.addCommand(pingCommand);
 
 program.parse(process.argv);

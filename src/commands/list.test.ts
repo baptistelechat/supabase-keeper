@@ -1,10 +1,11 @@
 import { log } from "@clack/prompts";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { loadConfig } from "../config";
+import { ensureConfig } from "../config";
 import { listCommand } from "./list";
 
 vi.mock("../config", () => ({
   loadConfig: vi.fn(),
+  ensureConfig: vi.fn(),
   DEFAULT_CONFIG_DIR: "mocked-dir",
 }));
 
@@ -44,11 +45,11 @@ describe("list command", () => {
   });
 
   it("should display message when no config found", async () => {
-    vi.mocked(loadConfig).mockResolvedValue(null);
+    (ensureConfig as any).mockResolvedValue({ projects: [] });
 
     await listCommand.parseAsync(["node", "test"]);
 
-    expect(loadConfig).toHaveBeenCalled();
+    expect(ensureConfig).toHaveBeenCalled();
     expect(log.info).toHaveBeenCalledWith(
       expect.stringContaining("No projects found"),
     );
@@ -56,7 +57,7 @@ describe("list command", () => {
 
   it("should display projects table when config exists", async () => {
     const mockDate = new Date("2023-01-01T00:00:00.000Z");
-    vi.mocked(loadConfig).mockResolvedValue({
+    (ensureConfig as any).mockResolvedValue({
       projects: [
         {
           name: "test-project",
@@ -71,7 +72,7 @@ describe("list command", () => {
 
     await listCommand.parseAsync(["node", "test"]);
 
-    expect(loadConfig).toHaveBeenCalled();
+    expect(ensureConfig).toHaveBeenCalled();
     // Verify table push was called with correct data
     expect(mockTablePush).toHaveBeenCalledWith([
       "test-project",
@@ -87,7 +88,7 @@ describe("list command", () => {
 
   it("should display createdAt if lastPing is missing", async () => {
     const mockDate = new Date("2023-01-01T00:00:00.000Z");
-    vi.mocked(loadConfig).mockResolvedValue({
+    (ensureConfig as any).mockResolvedValue({
       projects: [
         {
           name: "test-project-2",
@@ -113,15 +114,15 @@ describe("list command", () => {
   });
 
   it("should display Never if both lastPing and createdAt are missing", async () => {
-    vi.mocked(loadConfig).mockResolvedValue({
+    (ensureConfig as any).mockResolvedValue({
       projects: [
         {
           name: "test-project-3",
           supabaseProjectUrl: "https://test3.supabase.co",
           supabasePublishableKey: "sbp_xyz",
           status: "error",
-          createdAt: undefined,
           lastPing: undefined,
+          createdAt: undefined,
         },
       ],
     });

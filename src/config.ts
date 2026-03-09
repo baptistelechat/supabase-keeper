@@ -1,9 +1,48 @@
+import { log } from "@clack/prompts";
+import chalk from "chalk";
 import fs from "fs-extra";
 import os from "os";
 import path from "path";
 import { z } from "zod";
+import { logCommand } from "./utils/utils";
 
 export const DEFAULT_CONFIG_DIR = path.join(os.homedir(), ".supabase-keeper");
+
+export async function ensureConfig(
+  targetDir: string = DEFAULT_CONFIG_DIR,
+): Promise<Config> {
+  const config = await loadConfig(targetDir);
+
+  if (!config) {
+    log.error(
+      `Configuration file not found in ${chalk.red(targetDir)}. Run ${logCommand(
+        "supabase-keeper init",
+      )} first.`,
+    );
+    process.exit(1);
+  }
+
+  return config;
+}
+
+export function ensureProject(
+  config: Config,
+  projectName: string,
+): { project: Config["projects"][0]; index: number } {
+  const index = config.projects.findIndex((p) => p.name === projectName);
+  const project = config.projects[index];
+
+  if (index === -1 || !project) {
+    log.error(
+      `Project ${chalk.red(projectName)} not found. Use ${logCommand(
+        "supabase-keeper list",
+      )} to see available projects.`,
+    );
+    process.exit(1);
+  }
+
+  return { project, index };
+}
 
 export const ConfigSchema = z.object({
   projects: z

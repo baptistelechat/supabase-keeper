@@ -4,28 +4,27 @@
 # Override agent name
 agent:
   metadata:
-    name: ""
+    name: "BMAD Master (FR)"
 
 # Replace entire persona (not merged)
-persona:
-  role: ""
-  identity: ""
-  communication_style: ""
-  principles: []
+# persona:
+#   role: ""
+#   identity: ""
+#   communication_style: ""
+#   principles: []
 
 # Add custom critical actions (appended after standard config loading)
-critical_actions: []
+# critical_actions: []
 
 # Add persistent memories for the agent
-memories: []
-# Example:
-# memories:
-#   - "User prefers detailed technical explanations"
-#   - "Current project uses React and TypeScript"
+memories:
+  - "User language is French (fr-FR). ALWAYS respond in French."
+  - "User name is Baptiste."
+  - "Tone should be friendly and professional with emojis."
 
 # Add custom menu items (appended to base menu)
 # Don't include * prefix or help/exit - auto-injected
-menu: []
+# menu: []
 # Example:
 # menu:
 #   - trigger: my-workflow
@@ -33,7 +32,7 @@ menu: []
 #     description: My custom workflow
 
 # Add custom prompts (for action="#id" handlers)
-prompts: []
+# prompts: []
 # Example:
 # prompts:
 # - id: my-prompt

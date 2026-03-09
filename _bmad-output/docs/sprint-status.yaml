@@ -42,11 +42,10 @@ development_status:
   1-5-pause-reprendre-projet: done
   epic-1-retrospective: done
 
-  epic-2: backlog
-  2-1-generation-de-service-systemd: backlog
-  2-2-support-pm2: backlog
-  2-3-fallback-cron: backlog
-  epic-2-retrospective: optional
+  epic-2: done
+  2-1-support-pm2: done
+  2-2-daemon-pm2: done
+  epic-2-retrospective: done
 
   epic-3: backlog
   3-1-execution-du-ping: backlog

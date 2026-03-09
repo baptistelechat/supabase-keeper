@@ -2,10 +2,17 @@ import { intro, log, outro } from "@clack/prompts";
 import chalk from "chalk";
 import { Command } from "commander";
 import path from "path";
-import { DEFAULT_CONFIG_DIR, loadConfig, saveConfig } from "../config";
+import {
+  DEFAULT_CONFIG_DIR,
+  ensureConfig,
+  ensureProject,
+  saveConfig,
+} from "../config";
 
 export const pauseCommand = new Command("pause")
-  .description("Pause monitoring for a Supabase project (aliases: stop, suspend)")
+  .description(
+    "Pause monitoring for a Supabase project (aliases: stop, suspend)",
+  )
   .aliases(["stop", "suspend"])
   .argument("<project-name>", "Name of the project to pause")
   .argument("[directory]", "Directory where the config file is located")
@@ -14,34 +21,12 @@ export const pauseCommand = new Command("pause")
 
     const targetDir = directory ? path.resolve(directory) : DEFAULT_CONFIG_DIR;
 
-    const config = await loadConfig(targetDir);
+    const config = await ensureConfig(targetDir);
 
-    if (!config) {
-      log.error(
-        `Configuration file not found in ${targetDir}. Run 'supabase-keeper init' first.`,
-      );
-      process.exit(1);
-    }
-
-    const projectIndex = config.projects.findIndex(
-      (p) => p.name === projectName,
-    );
-
-    if (projectIndex === -1) {
-      log.error(`Project ${chalk.red(projectName)} not found.`);
-      process.exit(1);
-    }
-
-    const project = config.projects[projectIndex];
-
-    if (!project) {
-      log.error(`Project ${chalk.red(projectName)} could not be retrieved.`);
-      process.exit(1);
-    }
+    const { project, index: projectIndex } = ensureProject(config, projectName);
 
     if (project.status === "paused") {
       log.info(`Project ${chalk.yellow(projectName)} is already paused.`);
-      outro(chalk.yellow("No changes made."));
       return;
     }
 
@@ -50,6 +35,5 @@ export const pauseCommand = new Command("pause")
 
     await saveConfig(config, targetDir);
 
-    log.success(`Project ${chalk.green(projectName)} has been paused.`);
-    outro(chalk.green("Done!"));
+    outro(`Project ${chalk.green(projectName)} has been paused.`);
   });

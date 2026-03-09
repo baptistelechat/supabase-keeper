@@ -1,9 +1,10 @@
-import { intro, log } from "@clack/prompts";
+import { intro, log, outro } from "@clack/prompts";
 import chalk from "chalk";
 import Table from "cli-table3";
 import { Command } from "commander";
 import path from "path";
-import { DEFAULT_CONFIG_DIR, loadConfig } from "../config";
+import { DEFAULT_CONFIG_DIR, ensureConfig } from "../config";
+import { logCommand } from "../utils/utils";
 
 export const listCommand = new Command("list")
   .description("List all monitored Supabase projects (alias: ls)")
@@ -13,11 +14,11 @@ export const listCommand = new Command("list")
     intro(chalk.bgBlue(" supabase-keeper list "));
 
     const targetDir = directory ? path.resolve(directory) : DEFAULT_CONFIG_DIR;
-    const config = await loadConfig(targetDir);
+    const config = await ensureConfig(targetDir);
 
-    if (!config || config.projects.length === 0) {
+    if (config.projects.length === 0) {
       log.info(
-        `No projects found. Use ${chalk.cyan("supabase-keeper add")} to add one.`,
+        `No projects found. Use ${logCommand("supabase-keeper add")} to add one.`,
       );
       return;
     }
@@ -50,5 +51,6 @@ export const listCommand = new Command("list")
       ]);
     });
 
-    console.log(table.toString());
+    log.info(table.toString());
+    outro(chalk.green("Listing projects done!"));
   });
