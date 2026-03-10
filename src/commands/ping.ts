@@ -5,9 +5,11 @@ import fs from "fs";
 import cron from "node-cron";
 import path from "path";
 import { fileURLToPath } from "url";
-import { DEFAULT_CONFIG_DIR, ensureConfig } from "../config";
+import { DEFAULT_CONFIG_DIR, ensureConfig, saveConfig } from "../config";
+import { logPing } from "../utils/ping-logger";
 import { isPM2Installed, savePM2List, startWithPM2 } from "../utils/pm2";
 import { logCommand } from "../utils/utils";
+import { validateSupabaseConnection } from "../utils/validation";
 
 export const pingCommand = new Command("ping")
   .description("Ping all active projects")
@@ -49,20 +51,53 @@ export const pingCommand = new Command("ping")
 
       for (const project of activeProjects) {
         try {
-          // TODO: Implement actual ping logic (Epic 3)
-          // For now, just log
-          log.info(
-            `Pinging ${chalk.blue(project.name)} ${chalk.gray(
-              `(${project.supabaseProjectUrl})`,
-            )}`,
+          const result = await validateSupabaseConnection(
+            project.supabaseProjectUrl,
+            project.supabasePublishableKey,
           );
 
-          // Simulate ping
-          await new Promise((resolve) => setTimeout(resolve, 100));
-        } catch (error) {
-          log.error(`Failed to ping ${chalk.red(project.name)}: ${error}`);
+          if (result.isValid) {
+            log.info(
+              `✅ Pinging ${chalk.blue(project.name)}: Success (${
+                result.message
+              })`,
+            );
+            project.lastPing = new Date();
+            await logPing(
+              project.name,
+              true,
+              `Status: ${result.message}`,
+              targetDir,
+            );
+          } else {
+            log.error(
+              `❌ Pinging ${chalk.blue(project.name)}: Failed (${
+                result.message
+              })`,
+            );
+            await logPing(
+              project.name,
+              false,
+              `Status: ${result.message}`,
+              targetDir,
+            );
+          }
+        } catch (error: any) {
+          const errorMessage =
+            error.name === "AbortError" ? "Timeout" : error.message;
+          log.error(
+            `❌ Pinging ${chalk.blue(project.name)}: Error (${errorMessage})`,
+          );
+          await logPing(
+            project.name,
+            false,
+            `Error: ${errorMessage}`,
+            targetDir,
+          );
         }
       }
+
+      await saveConfig(config, targetDir);
       log.info(`[${new Date().toISOString()}] Ping cycle complete.`);
     };
 
@@ -71,7 +106,7 @@ export const pingCommand = new Command("ping")
     if (options.loop) {
       // En mode loop, on évite les intros/outros verbeux pour les logs
       log.info(
-        chalk.green("Starting Internal Loop Mode with Cron (09:00 daily)..."),
+        chalk.green("Starting Internal Loop Mode with Cron (every 30s)..."),
       );
 
       // Exécution immédiate au démarrage pour vérifier que tout fonctionne
@@ -80,7 +115,7 @@ export const pingCommand = new Command("ping")
       // Planification Cron : Tous les jours à 09:00
       // 0 9 * * *
       cron.schedule("0 9 * * *", async () => {
-        // cron.schedule("*/30 * * * * *", async () => {
+      // cron.schedule("*/30 * * * * *", async () => {
         try {
           log.info(chalk.blue("Running scheduled daily ping..."));
           await runPing();
@@ -94,6 +129,7 @@ export const pingCommand = new Command("ping")
       // Cependant, dans un script CLI, il faut parfois forcer l'attente.)
       // Une simple astuce est d'avoir un intervalle "heartbeat" très long ou juste laisser le cron.
       // Node ne quitte pas tant qu'il y a des callbacks prévus.
+      setInterval(() => {}, 1000 * 60 * 60);
 
       log.info(
         chalk.gray("Scheduler is running. Waiting for next execution..."),

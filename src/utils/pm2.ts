@@ -27,16 +27,18 @@ export function startWithPM2(
     try {
       execSync(`pm2 describe ${name}`, { stdio: "ignore" });
       log.info(
-        `Process ${chalk.yellow(name)} is already managed by PM2. Restarting...`,
+        `Process ${chalk.yellow(
+          name,
+        )} is already managed by PM2. Stopping and deleting old process...`,
       );
-      execSync(`pm2 restart ${name}`, { stdio: "inherit" });
-      return true;
+      // We delete instead of restart to ensure arguments and script path are updated
+      execSync(`pm2 delete ${name}`, { stdio: "inherit" });
     } catch (e) {
-      // Process not found, start new
+      // Process not found, proceed to start
     }
 
     const argsStr = args.length > 0 ? ` -- ${args.join(" ")}` : "";
-    
+
     // We also need to handle interpreter for .ts files if running locally
     // But let's assume built .js for now
 
