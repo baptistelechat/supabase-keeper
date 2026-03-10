@@ -48,7 +48,7 @@ development_status:
   epic-2-retrospective: done
 
   epic-3: in-progress
-  3-1-execution-du-ping: review
+  3-1-execution-du-ping: done
   3-2-implementation-du-jitter: backlog
   3-3-mecanisme-de-retry: backlog
   3-4-ping-manuel: backlog
